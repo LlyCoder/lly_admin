@@ -4,6 +4,7 @@ import types from './mutation-types'
 import defaultValue from '../mock/default'
 import  api from '../api/index'
 import { getSessionKey, getCurrentMenu} from '../until'
+import { resolve } from 'upath';
 
 Vue.use(Vuex)
 
@@ -16,7 +17,7 @@ const store = new Vuex.Store({
         articleLIst: state => state.articleLIst,
         loading: state => state.loading,
         menuList: state => state.menuList,
-        userInfo: state => state.userInfo,
+        adminInfo: state => state.adminInfo,
         currentMenus: state => state.currentMenus,
         sidebar: state => state.sidebar,
         device: state => state.device
@@ -33,7 +34,7 @@ const store = new Vuex.Store({
             isMobile: false
         },
         currentMenus: [],
-        token: sessionStorage.getItem('admin-token'),
+        access_token: sessionStorage.getItem('admin-token'),
         adminInfo: sessionStorage.getItem('admin-info')
     },
     //只能同步提交的函数
@@ -68,12 +69,12 @@ const store = new Vuex.Store({
         [types.LOAD_CURRENT_MENU](state, menu) {
             state.currentMenus = menu;
         },
-        [types.CREATE_TOKEN](state, token) {
-            state.token = token;
-            sessionStorage.setItem('admin-token', token)
+        [types.CREATE_TOKEN](state, access_token) {
+            state.access_token = access_token;
+            sessionStorage.setItem('admin-token', access_token)
         },
         [types.DELETE_TOKEN](state) {
-            state.token = null;
+            state.access_token = null;
             sessionStorage.setItem('admin-token', '');
         },
         [types.SET_INFO](state, info) {
@@ -92,7 +93,7 @@ const store = new Vuex.Store({
             commit(types.LOAD_CURRENT_MENU, a.reverse());
         },
         loadList: ({state,commit}, page) => {
-            Vue.axios.get(`/article/list/${num}/${page}`).then(res => {
+            Vue.axios.get(`/api/article/list/${page}`).then(res => {
                 let lists = res.data;
                 commit(types.LOAD_LIST, lists)
             })
@@ -100,7 +101,14 @@ const store = new Vuex.Store({
         createToken({ commit, state }, { grant_type, client_id, client_secret, username, password, scope}) {
             return api.createToken(grant_type, client_id, client_secret, username, password, scope).then(res => {
                 //console.log('token：' + res.data.access_token);
-                
+                if (res.data.access_token) {
+                    commit(types.CREATE_TOKEN, res.data.access_token);
+                } else {
+                    commit(types.DELETE_TOKEN);
+                }
+                return new Promise((resolve, reject) => {
+                    resolve(res);
+                })
             })
         }
     }

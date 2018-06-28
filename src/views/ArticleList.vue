@@ -1,60 +1,60 @@
 <template>
     <div>
-        <div class="table-responsive-lg">
-            <table class="table table-hover">
-                <thead>
-                    <tr class="">
-                        <th scope="col">#</th>
-                        <th scope="col">文章标题</th>
-                        <th scope="col">文章作者</th>
-                        <th scope="col">创建时间</th>
-                        <th scope="col">最近更新</th>
-                        <th scope="col">内容</th>
-                        <th scope="col">操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <template v-for="(item, key) in articleLists.data">
-                        <tr>
-                            <th scope="row">{{item.id}}</th>
-                            <td>{{item.title}}</td>
-                            <td>{{item.author}}</td>
-                            <td>{{item.created_at}}</td>
-                            <td>三天前</td>
-                            <td class="text-content" v-text="item.content"></td>
-                            <td>
-                                <button type="button" class="btn btn-outline-primary btn-sm" @click="$router.push('/edit/'+item.id)">编辑</button>
-                            </td>
-                        </tr>
-                    </template>
-                </tbody>
-            </table>
-        </div>
-        <div class="th-pagination">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#">Previous</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">1</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+        <el-table :data="articleLists.data" border style="width: 100%">
+            <el-table-column  prop="id" label="#ID" width="100" align="center">
+            </el-table-column>
+            <el-table-column  label="文章封面" width="150" align="center">
+                <template slot-scope="scope">
+                    <img :src="scope.row.cover" alt="封面" class="cover">
+                </template>
+            </el-table-column>
+            <el-table-column prop="title" label="文章标题" width="120" align="center">
+            </el-table-column>
+            <el-table-column prop="content" label="文章内容" width="120" align="center">
+            </el-table-column>
+            <el-table-column label="所属标签" width="120" align="center">
+                <template slot-scope="scope">
+                    <div>{{scope.row.tags | tags}}</div>
+                </template>
+            </el-table-column>
+            <el-table-column  label="创建时间" width="180" align="center">
+                <template slot-scope="scope">
+                    <div>{{scope.row.created_at}}</div>
+                </template>
+            </el-table-column>
+            <el-table-column label="最近更新" width="120" align="center">
+                <template slot-scope="scope">
+                    <div>{{scope.row.updated_at | timeAgo}}</div>
+                </template>
+            </el-table-column>
+            <el-table-column fixed="right" label="操作" width="100" align="center">
+                <template slot-scope="scope">
+                    <el-button @click="handleClick(scope.row)" type="text" size="small">删除</el-button>
+                    <el-button type="text" size="small" @click="$router.push('/edit/'+scope.row.id)">编辑</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
     </div>
 </template>
 
 <script>
     //import store
     import {mapGetters, mapActions, mapMutations} from 'vuex'
+    import * as filters from '../until/filters'
     export default {
         data() {
             return {
                 page: '1',
+            }
+        },
+        filters: {
+            timeAgo: filters.timeAgo,
+            tags(tags) {
+                if (tags.length === 0) {
+                    return "未归类"
+                } else {
+
+                }
             }
         },
         computed: {
@@ -68,6 +68,9 @@
         methods: {
             getData() {
                 this.$store.dispatch('loadList',this.page);
+            },
+            handleClick() {
+
             }
         }
     }
@@ -78,6 +81,11 @@
 </style>
 
 <style scoped>
+    .cover {
+        display: inline-block;
+        width: 80px;
+        height: 80px;
+    }
      .th-pagination {
 		width: 100%;
         display: flex;

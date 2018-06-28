@@ -47,7 +47,18 @@
                     password: this.loginForm.password,
                     scope: ''
                 }
-                this.$store.dispatch('createToken', info)
+                this.$store.dispatch('createToken', info).then(res => {
+                    if (res.data.access_token) {
+                         this.$message({
+                            message: '登录成功！',
+                            type: 'success',
+                            center: true
+                        });
+                        this.$router.push('/index');
+                    }
+                }).catch(err => {
+                    this.$message.error('抱歉，登录出错');
+                })
             }
         }
     }

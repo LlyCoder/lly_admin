@@ -4,8 +4,15 @@
             <el-form-item label="文章标题">
                 <el-input v-model="formInput.title"></el-input>
             </el-form-item>
-            <el-form-item label="文章作者">
-                <el-input v-model="formInput.author"></el-input>
+            <el-form-item label="封面上传">
+                <el-upload class="upload-demo" action="https://webblog.yolostudio.cn/api/file/upload" :on-remove="handleRemove"
+                    list-type="picture"
+                    :headers=headers
+                    :limit="1"
+                    :on-success="backCoverSrc">
+                    <el-button size="small" type="primary">点击上传</el-button>
+                    <!-- <div slot="tip" class="el-upload__tip">图片小于2MB</div> -->
+                </el-upload>
             </el-form-item>
             <!-- 通过尺寸控制是否启用富文本 -->
             <el-form-item label="编辑内容" v-show="!device.isMobile">
@@ -29,12 +36,12 @@
         data() {
             return {
                 labelPosition: 'top',
-                num:  '123456',
                 // editorContent: '',
                 formInput: {
                     title: '',
-                    author: '',
-                    content: ''
+                    content: '',
+                    articleCover: '',
+                    checkTags: []
                 }
             }
         },
@@ -42,7 +49,12 @@
             ...mapGetters({
                 sidebar: 'sidebar',
                 device: 'device'
-            })
+            }),
+            headers() {
+                return {
+                    'Authorization': 'Bearer ' + this.$store.state.access_token
+                }
+            }
         },
         mounted() {
             var editor = new E(this.$refs.editor)
@@ -56,11 +68,11 @@
         methods: {
             submit() {
                 const num = this.num;
-                this.$http.post(`/article/save/${num}`, {
-                    author: this.formInput.author,
+                this.$http.post(`/api/article/save`, {
                     content: this.formInput.content,
-                    number: num,
-                    title: this.formInput.title
+                    title: this.formInput.title,
+                    cover: this.formInput.articleCover,
+                    tags: this.formInput.checkTags
                 }).then(res => {
                     if (res.data.status) {
                         this.$message({
@@ -75,6 +87,13 @@
                 }).catch(err => {
                     console.log(err)
                 })
+            },
+            backCoverSrc(response, file, fileList) {
+                console.log(response)
+                this.formInput.articleCover = response.data;
+            },
+            handleRemove(file, fileList) {
+
             }
         }
     }

@@ -5,10 +5,6 @@
                 <label for="exampleFormControlInput1">标题</label>
                 <input type="text" class="form-control" v-model="detail.title">
             </div>
-            <div class="form-group">
-                <label for="exampleFormControlInput1">作者</label>
-                <input type="text" class="form-control" v-model="detail.author">
-            </div>
             <div class="from-group" v-show="!device.isMobile">
                 <label for="exampleFormControlTextarea1">内容</label>
                 <div ref="editor" class="editor_diy" name="file">
@@ -30,7 +26,6 @@
     export default {
         data() {
             return {
-                num: '123456',
                 articleId: this.$route.params.id,
                 detail: {
                     title: '',
@@ -60,7 +55,7 @@
                 let num = this.num;
                 let articleId = this.articleId;
                 if(articleId) {
-                    this.$http.get(`/article/detail/${num}/${articleId}`).then(res => {
+                    this.$http.get(`/api/article/detail/${articleId}`).then(res => {
                         this.detail = res.data.data;
                     })
                 }

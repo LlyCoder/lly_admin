@@ -43,7 +43,15 @@
       //因为守卫在导航确认前被调用,因此即将登场的新组件还没被创建。不能访问当前实例
       //通过传一个回调给 next来访问组件实例。在导航被确认的时候执行回调，并且把组件实例作为回调方法的参数。
       next(vm => {
-        
+        if (!vm.$store.state.access_token) {
+            vm.$message({
+              showClose: true,
+              message: '当前未登录！',
+              center: true,
+              type: 'warning'
+            });
+            vm.$router.push('/login')
+        } 
       })
     },
     components: {
@@ -54,18 +62,24 @@
       ...mapGetters({
         sidebar: 'sidebar',
         device: 'device',
-        currentMenus: 'currentMenus'
+        currentMenus: 'currentMenus',
+        adminInfo: 'adminInfo'
       })
     },
-    created() {
-  
-      //  hook the progress bar to start before we move router-view
+    created() { 
       this.$router.beforeEach((to, from, next) => {
         this.$store.dispatch('changeCurrentMenu', to);
         next()
       })
       this.$router.afterEach((to, from) => {
         
+      });
+      this.$http.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.access_token;
+      this.$http.get('/api/user').then(res => {
+        if (res.data.id) {
+          this.setInfo(res.data.name);
+          console.log(this.$store)
+        }
       })
     },
     beforeMount() {
@@ -95,6 +109,7 @@
         toggleDevice: types.TOGGLE_DEVICE,
         toggleSidebar: types.TOGGLE_SIDEBAR,
         toggleSidebarShow: types.TOGGLE_SIDEBAR_SHOW,
+        setInfo: types.SET_INFO
       }),
       ...mapActions({
         changeCurrentMenu: 'changeCurrentMenu' // this.$store.dispatch('changeCurrentMenu')

@@ -10,7 +10,7 @@
             <div class="navbar-menu">
                 <el-dropdown trigger="click" @command="handleCommand">
                     <div class="el-dropdown-link">
-                        <img src="/static/img/user.png" class="avatar">吕林洋
+                        <img src="/static/img/user.png" class="avatar">{{adminInfo}}<i class="el-icon-arrow-down el-icon--right"></i>
                     </div>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item command="setting">设置</el-dropdown-item>
@@ -33,8 +33,9 @@
         },
         computed: {
              ...mapGetters({
-                 sidebar: 'sidebar',
-                 device: 'device'
+                sidebar: 'sidebar',
+                device: 'device',
+                adminInfo: 'adminInfo'
              })
         },
         methods: {
@@ -49,19 +50,29 @@
                 toggleSidebar: types.TOGGLE_SIDEBAR,
                 toggleSidebarShow: types.TOGGLE_SIDEBAR_SHOW,
                 setUserInfo: types.SET_USER_INFO,
+                deleteToken: types.DELETE_TOKEN
             }),
             handleCommand(cmd) {
                 if(cmd === 'loginOut') {
-                    this.$message({
-                        message: '注销成功',
-                        type: 'success',
-                        center: true
-                    });
-                    this.$router.push('/login');
+                    this.loginOut()
                 }
             },
             loginOut() {
-               
+               this.$confirm('此操作将退出系统, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.deleteToken()
+                    this.$router.push('/login');
+                    this.$message({
+                        type: 'success',
+                        message: '退出成功',
+                        center: true
+                    });
+                }).catch(() => {
+
+                })
             }
         }
     }
