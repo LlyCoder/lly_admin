@@ -7,6 +7,9 @@ import Login from '../views/Login'
 import ArticleList from '../views/ArticleList'
 import Post from '../views/Post'
 import EditPage from '../views/EditPage'
+import AddTags from '../views/AddTags'
+import TagList from '../views/TagList'
+import EditTag from '../views/EditTag'
 import NotFoundPage from '../components/pages/404notfound'
 import App from '../App'
 
@@ -41,7 +44,19 @@ export default new Router({
         {
           path: '/post',
           component: Post
-        }
+        },
+        {
+          path: 'addTags',
+          component: AddTags
+        },
+        {
+          path: 'taglist',
+          component: TagList
+        },
+        {
+          path: '/editTag/:id',
+          component: EditTag
+        },
       ],
       redirect: '/index'
     },

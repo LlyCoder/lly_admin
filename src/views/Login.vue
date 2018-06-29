@@ -57,7 +57,12 @@
                         this.$router.push('/index');
                     }
                 }).catch(err => {
-                    this.$message.error('抱歉，登录出错');
+                    this.$message({
+                        showClose: true,
+                        message: '登录出错，请重新尝试',
+                        type: 'error',
+                        center: true
+                    });
                 })
             }
         }

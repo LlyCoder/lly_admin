@@ -11,7 +11,7 @@ export default {
       "isShow": "1"
     },
     {
-      "id": 31,
+      "id": 2,
       "parentId": null,
       "sort": 1,
       "name": "文章管理",
@@ -20,7 +20,7 @@ export default {
       "children": [
         {
           "id": 92,
-          "parentId": 31,
+          "parentId": 2,
           "sort": 0,
           "name": "文章列表",
           "href": "/articleList",
@@ -29,7 +29,7 @@ export default {
         },
         {
           "id": 93,
-          "parentId": 31,
+          "parentId": 2,
           "sort": 0,
           "name": "发布文章",
           "href": "/post",
@@ -41,7 +41,7 @@ export default {
       "isShow": "1"
     },
     {
-      "id": 102,
+      "id": 3,
       "parentId": null,
       "sort": 3,
       "name": "标签管理",
@@ -49,12 +49,22 @@ export default {
       "icon": "fa fa-tag",
       "children": [
         {
-          "id": 103,
-          "parentId": 102,
+          "id": 13,
+          "parentId": 3,
           "sort": 0,
-          "name": "测试2-1",
-          "href": "/test/2/1",
-          "icon": "fa fa-image",
+          "name": "标签列表",
+          "href": "/taglist",
+          "icon": "fa fa-list-alt",
+          "children": [],
+          "isShow": "1"
+        },
+        {
+          "id": 23,
+          "parentId": 3,
+          "sort": 0,
+          "name": "添加标签",
+          "href": "/addtags",
+          "icon": "fa fa-plus",
           "children": [],
           "isShow": "1"
         }
@@ -92,7 +102,7 @@ export default {
         {
           "id": 8,
           "parentId": 6,
-          "sort": 2,
+          "sort": 1,
           "name": "角色管理",
           "href": "/sys/roleList",
           "icon": "fa fa-universal-access",

@@ -1,36 +1,34 @@
 <template>
     <div>
-        <el-table :data="articleLists.data" border style="width: 100%">
-            <el-table-column  prop="id" label="#ID" width="100" align="center">
+        <el-table :data="list" border style="width: 100%">
+            <el-table-column prop="id" label="#ID" width="130" align="center"> 
             </el-table-column>
-            <el-table-column  label="文章封面" width="150" align="center">
+            <el-table-column label="文章封面" width="150" align="center">
                 <template slot-scope="scope">
                     <img :src="scope.row.cover" alt="封面" class="cover">
                 </template>
             </el-table-column>
-            <el-table-column prop="title" label="文章标题" width="120" align="center">
-            </el-table-column>
-            <el-table-column prop="content" label="文章内容" width="120" align="center">
-            </el-table-column>
-            <el-table-column label="所属标签" width="120" align="center">
+            <el-table-column  label="名称" width="120" align="center">
                 <template slot-scope="scope">
-                    <div>{{scope.row.tags | tags}}</div>
+                    <el-tag>{{scope.row.name}}</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column  label="创建时间" width="180" align="center">
+            <el-table-column prop="description" label="简述" width="180" align="center">
+            </el-table-column>
+            <el-table-column label="创建时间" width="180" align="center">
                 <template slot-scope="scope">
                     <div>{{scope.row.created_at}}</div>
                 </template>
             </el-table-column>
             <el-table-column label="最近更新" width="120" align="center">
                 <template slot-scope="scope">
-                    <div>{{scope.row.updated_at | timeAgo}}</div>
+                    <div>{{scope.row.updated_at}}</div>
                 </template>
             </el-table-column>
-            <el-table-column fixed="right" label="操作" width="100" align="center">
+            <el-table-column fixed="right" label="操作" width="100">
                 <template slot-scope="scope">
                     <el-button @click="del(scope.row.id)" type="text" size="small">删除</el-button>
-                    <el-button type="text" size="small" @click="$router.push('/edit/'+scope.row.id)">编辑</el-button>
+                    <el-button type="text" size="small" @click="$router.push('/editTag/'+scope.row.id)">编辑</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -38,63 +36,48 @@
 </template>
 
 <script>
-    //import store
-    import {mapGetters, mapActions, mapMutations} from 'vuex'
-    import * as filters from '../until/filters'
     export default {
         data() {
             return {
-                page: '1',
+                list: []
             }
-        },
-        filters: {
-            timeAgo: filters.timeAgo,
-            tags(tags) {
-                if (tags.length === 0) {
-                    return "未归类"
-                } else {
-
-                }
-            }
-        },
-        computed: {
-            ...mapGetters({
-                articleLists: 'articleLIst'
-            })
         },
         created() {
-            this.getData();
+            this.init()
         },
         methods: {
-            getData() {
-                this.$store.dispatch('loadList',this.page);
-            },
-            handleClick() {
-
+            init() {
+                this.$http.get('/api/tags/list').then(res => {
+                    if (res.data.data.length) {
+                        this.list = res.data.data;
+                    }
+                }).catch(err => {
+                    console.log(err)
+                })
             },
             del(id) {
-                this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
+                this.$confirm('此操作将永久删除该标签, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$http.post('/api/article/delete', {id: id}).then(res => {
+                    this.$http.post('/api/tags/delete', { id: id }).then(res => {
                         if (res.data.status) {
                             this.$message({
                                 type: 'success',
                                 message: '删除成功!',
                                 center: true
                             });
-                            this.getData();
+                            this.init();
                         } else {
-                             this.$message({
+                            this.$message({
                                 showClose: true,
                                 message: '错了哦，请稍后再试',
                                 type: 'error',
                                 center: true
                             });
                         }
-                    })   
+                    })
                 }).catch(() => {
                     this.$message({
                         type: 'info',
@@ -106,20 +89,10 @@
     }
 </script>
 
-<style scoped src="../../node_modules/_bootstrap@4.1.1@bootstrap/dist/css/bootstrap.min.css">
-  
-</style>
-
 <style scoped>
     .cover {
         display: inline-block;
         width: 80px;
         height: 80px;
     }
-     .th-pagination {
-		width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-	}
 </style>
