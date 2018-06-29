@@ -11,7 +11,6 @@
                     :limit="1"
                     :on-success="backCoverSrc">
                     <el-button size="small" type="primary">点击上传</el-button>
-                    <!-- <div slot="tip" class="el-upload__tip">图片小于2MB</div> -->
                 </el-upload>
             </el-form-item>
             <!-- 通过尺寸控制是否启用富文本 -->
@@ -67,7 +66,6 @@
         },
         methods: {
             submit() {
-                const num = this.num;
                 this.$http.post(`/api/article/save`, {
                     content: this.formInput.content,
                     title: this.formInput.title,
