@@ -22,10 +22,12 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex'
     export default {
         data() {
             return {
-                labelPosition: top,
+                labelPosition: 'top',
+                id: '',
                 formInput: {
                     name: '',
                     description: '',
@@ -34,19 +36,60 @@
             }
         },
         computed: {
+            ...mapGetters({
+                tagDetail: 'tagDetail'
+            }),
             headers() {
                 return {
                     'Authorization': 'Bearer ' + this.$store.state.access_token
                 }
             }
         },
-        created() {
+        mounted() {
             this.init()
         },
         methods: {
             init() {
-                
-            }
+                let tagDetail = JSON.parse(this.tagDetail);
+                console.log(JSON.parse(this.tagDetail));
+                this.formInput.name = tagDetail.name;
+                this.fileList = [{url: tagDetail.cover}];
+                this.formInput.description = tagDetail.description;
+                this.id = tagDetail.id;
+            },
+            backCoverSrc(response, file, fileList) {
+                console.log(response)
+                this.fileList = [{ url: response.data }];
+            },
+            handleRemove(file, fileList) {
+                this.fileList.pop();
+            },
+            submit() {
+                    this.$http.post(`/api/tags/save`, {
+                    id:this.id,
+                    name: this.formInput.name,
+                    description: this.formInput.description,
+                    cover: this.fileList[0].url
+                }).then(res => {
+                    if (res.data.status) {
+                        this.$message({
+                            message: '修改标签成功',
+                            type: 'success',
+                            center: true
+                        });
+                        this.$router.push('/taglist');
+                    } else {
+                        this.$message.error('错了哦');
+                    }
+                }).catch(err => {
+                    if (err.response.status === 500) {
+                        this.$message.error('错了哦，有选项尚未填写');
+                    } else {
+                        this.$message.error('错了哦，请稍后再试');
+                    }
+                    
+                })
+            },
         }
     }
 </script>

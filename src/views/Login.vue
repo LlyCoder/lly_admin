@@ -57,12 +57,23 @@
                         this.$router.push('/index');
                     }
                 }).catch(err => {
-                    this.$message({
-                        showClose: true,
-                        message: '登录出错，请重新尝试',
-                        type: 'error',
-                        center: true
-                    });
+                    console.log(err.response.status)
+                    if (err.response.status === 401) {
+                        this.$message({
+                            showClose: true,
+                            message: '登录出错，你的身份验证未通过',
+                            type: 'error',
+                            center: true
+                        });
+                    } else {
+                       this.$message({
+                            showClose: true,
+                            message: '登录出错，请重新尝试',
+                            type: 'error',
+                            center: true
+                        }); 
+                    }
+                    
                 })
             }
         }

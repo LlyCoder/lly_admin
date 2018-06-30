@@ -83,7 +83,11 @@
                         this.$message.error('错了哦');
                     }
                 }).catch(err => {
-                    console.log(err)
+                    if (err.response.status === 500) {
+                        this.$message.error('错了哦，有选项尚未填写');
+                    } else {
+                        this.$message.error('错了哦，请稍后再试');
+                    }  
                 })
             },
             backCoverSrc(response, file, fileList) {

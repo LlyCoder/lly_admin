@@ -20,7 +20,9 @@ const store = new Vuex.Store({
         adminInfo: state => state.adminInfo,
         currentMenus: state => state.currentMenus,
         sidebar: state => state.sidebar,
-        device: state => state.device
+        device: state => state.device,
+        tagDetail: state => state.tagDetail,
+        currentPage: state => state.currentPage
     },
     state: {
         articleLIst: [],
@@ -35,7 +37,9 @@ const store = new Vuex.Store({
         },
         currentMenus: [],
         access_token: sessionStorage.getItem('admin-token'),
-        adminInfo: sessionStorage.getItem('admin-info')
+        adminInfo: sessionStorage.getItem('admin-info'),
+        tagDetail: sessionStorage.getItem('tag-detail'),
+        currentPage: sessionStorage.getItem('current-page')
     },
     //只能同步提交的函数
     mutations: {
@@ -80,6 +84,14 @@ const store = new Vuex.Store({
         [types.SET_INFO](state, info) {
             state.adminInfo = info;
             sessionStorage.setItem('admin-info', info);
+        },
+        [types.CURRENT_TAG](state, tagDetail) {
+            state.tagDetail = tagDetail;
+            sessionStorage.setItem('tag-detail', tagDetail);
+        },
+        [types.CURRENT_PAGE](state, currentPage) {
+            state.currentPage = currentPage;
+            sessionStorage.setItem('current-page', currentPage);
         }
     },
     actions: {
@@ -95,7 +107,7 @@ const store = new Vuex.Store({
         loadList: ({state,commit}, page) => {
             Vue.axios.get(`/api/article/list/${page}`).then(res => {
                 let lists = res.data;
-                commit(types.LOAD_LIST, lists)
+                commit(types.LOAD_LIST, lists);
             })
         },
         createToken({ commit, state }, { grant_type, client_id, client_secret, username, password, scope}) {

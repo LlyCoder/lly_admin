@@ -78,7 +78,6 @@
       this.$http.get('/api/user').then(res => {
         if (res.data.id) {
           this.setInfo(res.data.name);
-          console.log(this.$store)
         }
       })
     },

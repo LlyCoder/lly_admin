@@ -34,17 +34,26 @@
                 </template>
             </el-table-column>
         </el-table>
+        <el-row type="flex" justify="center" class="pagenation">
+            <el-pagination background layout="prev, pager, next" 
+            :current-page=page  
+            :page-count="pageNum" 
+             @current-change="handleCurrentChange">
+            </el-pagination>
+        </el-row>   
     </div>
 </template>
 
 <script>
     //import store
+    
     import {mapGetters, mapActions, mapMutations} from 'vuex'
     import * as filters from '../until/filters'
     export default {
         data() {
             return {
-                page: '1',
+                pageNum: 0,
+                page: 0,
             }
         },
         filters: {
@@ -59,15 +68,21 @@
         },
         computed: {
             ...mapGetters({
-                articleLists: 'articleLIst'
+                articleLists: 'articleLIst',
+                currentPage: 'currentPage'
             })
         },
         created() {
-            this.getData();
+            this.page = Number(sessionStorage.getItem('current-page') || 1);
+            console.log('page: '+ this.page)
+        },
+        mounted() {
+            this.getData(); 
         },
         methods: {
             getData() {
                 this.$store.dispatch('loadList',this.page);
+                this.pageNum = this.articleLists.pageNum;
             },
             handleClick() {
 
@@ -101,6 +116,12 @@
                         message: '已取消删除'
                     });
                 });
+            },
+            handleCurrentChange(page) {
+                this.page = page;
+            //    this.$store.commit('CURRENT_PAGE', page);
+               sessionStorage.setItem('current-page', page)
+               this.getData(); 
             }
         }
     }
@@ -122,4 +143,7 @@
         justify-content: center;
         align-items: center;
 	}
+    .pagenation {
+        margin-top: 15px;
+    }
 </style>

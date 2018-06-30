@@ -28,7 +28,7 @@
             <el-table-column fixed="right" label="操作" width="100">
                 <template slot-scope="scope">
                     <el-button @click="del(scope.row.id)" type="text" size="small">删除</el-button>
-                    <el-button type="text" size="small" @click="$router.push('/editTag/'+scope.row.id)">编辑</el-button>
+                    <el-button @click="toEdit(scope.row)" type="text" size="small">编辑</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -36,16 +36,22 @@
 </template>
 
 <script>
+    import {mapMutations } from 'vuex'
+    import types from '../store/mutation-types'
     export default {
         data() {
             return {
-                list: []
+                list: [],
+                detail: {}
             }
         },
         created() {
-            this.init()
+            this.init();
         },
         methods: {
+            ...mapMutations({
+                currentTag: types.CURRENT_TAG
+            }),
             init() {
                 this.$http.get('/api/tags/list').then(res => {
                     if (res.data.data.length) {
@@ -84,6 +90,14 @@
                         message: '已取消删除'
                     });
                 });
+            },
+            toEdit(detail) {
+                this.$router.push('/editTag/' + detail.id);
+                //一定要序列化数据，否则会保存成 [object object]
+                detail = JSON.stringify(detail)
+                // sessionStorage.setItem('tag-detail', detail)
+                this.currentTag(detail);
+                
             }
         }
     }
