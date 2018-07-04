@@ -4,6 +4,15 @@
             <el-form-item label="文章标题">
                 <el-input v-model="formInput.title"></el-input>
             </el-form-item>
+            <el-form-item label="文章标签">
+                <el-select 
+                    v-model="formInput.checkTags" 
+                    multiple placeholder="请选择"
+                    @change="getSelect">
+                    <el-option v-for="item in formInput.options" :key="item.id" :label="item.name" :value="item.id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item label="封面上传">
                 <el-upload class="upload-demo" action="https://webblog.yolostudio.cn/api/file/upload" :on-remove="handleRemove"
                     list-type="picture"
@@ -40,7 +49,8 @@
                     title: '',
                     content: '',
                     articleCover: '',
-                    checkTags: []
+                    checkTags: [],
+                    options: []
                 }
             }
         },
@@ -62,7 +72,8 @@
             }
             editor.customConfig.uploadImgServer = 'http://127.0.0.1:3000/articles/uploads';
             editor.customConfig.uploadFileName = 'uploadImg';
-            editor.create()
+            editor.create();
+            this.init();
         },
         methods: {
             submit() {
@@ -94,8 +105,20 @@
                 console.log(response)
                 this.formInput.articleCover = response.data;
             },
+            init() {
+                  this.$http.get('/api/tags/list').then(res => {
+                    if (res.data.data.length) {
+                        this.formInput.options = res.data.data;
+                    }
+                }).catch(err => {
+                    console.log(err)
+                })
+            },
             handleRemove(file, fileList) {
 
+            },
+            getSelect(list) {
+               this.formInput.checkTags = list;
             }
         }
     }

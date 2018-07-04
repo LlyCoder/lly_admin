@@ -22,7 +22,7 @@
             </el-table-column>
             <el-table-column label="最近更新" width="120" align="center">
                 <template slot-scope="scope">
-                    <div>{{scope.row.updated_at}}</div>
+                    <div>{{scope.row.updated_at | timeAgo}}</div>
                 </template>
             </el-table-column>
             <el-table-column fixed="right" label="操作" width="100">
@@ -38,6 +38,8 @@
 <script>
     import {mapMutations } from 'vuex'
     import types from '../store/mutation-types'
+    import * as filters from '../until/filters'
+
     export default {
         data() {
             return {
@@ -47,6 +49,9 @@
         },
         created() {
             this.init();
+        },
+        filters: {
+            timeAgo: filters.timeAgo
         },
         methods: {
             ...mapMutations({

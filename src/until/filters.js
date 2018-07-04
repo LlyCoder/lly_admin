@@ -1,20 +1,21 @@
 // change 
 export const timeAgo = (dateTimeStamp)  => {
     let result;
-    dateTimeStamp = Date.parse(dateTimeStamp); 
+    dateTimeStamp = Date.parse(new Date(dateTimeStamp));
     let minute = 1000 * 60;      
     let hour = minute * 60;
     let day = hour * 24;
     let week = day * 7;
     let halfamonth = day * 15;
     let month = day * 30;
-    let now = new Date().getTime();   //获取当前时间毫秒
-    let diffValue = now - dateTimeStamp;//时间差
+    let now = new Date().getTime() - 8 * hour;   //获取当前时间毫秒,与UTC时间保持一致。
+    let diffValue = now - dateTimeStamp;//时间毫秒差
 
     if (diffValue < 0) {
         return;
     }
-    let minC = diffValue / minute;  //计算时间差的分，时，天，周，月
+    //计算时间差的分，时，天，周，月
+    let minC = diffValue / minute;  
     let hourC = diffValue / hour;
     let dayC = diffValue / day;
     let weekC = diffValue / week;

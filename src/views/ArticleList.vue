@@ -14,7 +14,11 @@
             </el-table-column>
             <el-table-column label="所属标签" width="120" align="center">
                 <template slot-scope="scope">
-                    <div>{{scope.row.tags | tags}}</div>
+                    <div v-if="scope.row.tags.length === 0">未分类</div>
+                    <el-tag v-for="(tag,index) in scope.row.tags" :key="index" v-else>  
+                        {{tag}}
+                    </el-tag>
+                    <!-- <div>{{scope.row.tags | tags}}</div> -->
                 </template>
             </el-table-column>
             <el-table-column  label="创建时间" width="180" align="center">
@@ -58,13 +62,12 @@
         },
         filters: {
             timeAgo: filters.timeAgo,
-            tags(tags) {
-                if (tags.length === 0) {
-                    return "未归类"
-                } else {
-
-                }
-            }
+            // tagFilter(tag) {
+            //     if (tag === '') {
+            //         console.log('tag：' + tag)
+            //         return "未归类"
+            //     }
+            // }
         },
         computed: {
             ...mapGetters({

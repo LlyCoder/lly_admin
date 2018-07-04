@@ -80,32 +80,12 @@ export default {
       "icon": "fa fa-cog",
       "children": [
         {
-          "id": 108,
-          "parentId": 6,
-          "sort": 0,
-          "name": " 资源管理",
-          "href": "/sys/resource",
-          "icon": "fa fa-database",
-          "children": [],
-          "isShow": "1"
-        },
-        {
           "id": 7,
           "parentId": 6,
           "sort": 1,
           "name": "菜单管理",
-          "href": "/sys/menuList",
+          "href": "/menuList",
           "icon": "fa fa-navicon",
-          "children": [],
-          "isShow": "1"
-        },
-        {
-          "id": 8,
-          "parentId": 6,
-          "sort": 1,
-          "name": "角色管理",
-          "href": "/sys/roleList",
-          "icon": "fa fa-universal-access",
           "children": [],
           "isShow": "1"
         },
