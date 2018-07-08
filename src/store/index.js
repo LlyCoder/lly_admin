@@ -100,7 +100,7 @@ const store = new Vuex.Store({
         loadMenuList: ({commit}) => {
             commit(types.LOAD_MENU, defaultValue.menuList)
         },
-        changeCurrentMenu: ({ state, commit }, { path, matched, fullPath }) => {
+        changeCurrentMenu: ({ state, commit }, {fullPath }) => {
             const a = getCurrentMenu(fullPath, state.menuList);
             commit(types.LOAD_CURRENT_MENU, a.reverse());
         },

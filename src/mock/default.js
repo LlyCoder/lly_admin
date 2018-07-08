@@ -4,7 +4,7 @@ export default {
       "id": 1,
       "parentId": null,
       "sort": 0,
-      "name": "测试",
+      "name": "首页",
       "href": "/index",
       "icon": "fa fa-dashboard",
       "children": [],
